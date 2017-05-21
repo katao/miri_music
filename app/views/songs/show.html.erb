@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Gn:</strong>
+  <%= @song.gn_id %>
+</p>
+
+<p>
+  <strong>Album:</strong>
+  <%= @song.album_id %>
+</p>
+
+<p>
+  <strong>Artist:</strong>
+  <%= @song.artist %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @song.title %>
+</p>
+
+<p>
+  <strong>Track num:</strong>
+  <%= @song.track_num %>
+</p>
+
+<p>
+  <strong>Mood:</strong>
+  <%= @song.mood %>
+</p>
+
+<p>
+  <strong>Tempo:</strong>
+  <%= @song.tempo %>
+</p>
+
+<%= link_to 'Edit', edit_song_path(@song) %> |
+<%= link_to 'Back', songs_path %>
