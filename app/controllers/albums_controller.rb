@@ -11,13 +11,37 @@ class AlbumsController < ApplicationController
       :userID => "32185966555210305-3B5A796CF0A1B370B88F4258970932B7"
     })
 
-    # result = gracenote.findTrack("Perfume", "GAME", "チョコレイト・ディスコ", '0').inspect
+    #result = gracenote.findTrack("Perfume", "GAME", "チョコレイト・ディスコ", '0').inspect
     # puts result
     # 1.アルバムを指定
     # 2.api実行
 
-    result = gracenote.findTrack("", "THE IDOLM@STER LIVE THE@TER PERFORMANCE 13", "", '0') # .inspect
-#    binding.pry
+    #result = gracenote.findTrack("", "THE IDOLM@STER LIVE THE@TER COLLECTION Vol. 2 -765PRO ALLSTARS- [Disc 2]", "", '0') # .inspect
+    ## THE IDOLM@STER LIVE THE@TER DREAMERS 02 がない問題
+    ## LTA LTFはない
+    # result = gracenote.findTrack("", "", "創造は始まりの風を連れて", '0') # .inspect
+if false
+    @albums.each do |album|
+      album.songs.each do |song|
+        unless song.tempo.blank?
+          tempo_ids = []
+          song.tempo.split(',').each do |m|
+            tempo_ids = tempo_ids.push(Tempo.find_or_create_by(name: m).id)
+          end
+          song.tempos = Tempo.where(id: tempo_ids)
+          song.save
+        end
+        unless song.mood.blank?
+          mood_ids = []
+          song.mood.split(',').each do |m|
+            mood_ids = mood_ids.push(Mood.find_or_create_by(name: m).id)
+          end
+          song.moods = Mood.where(id: mood_ids)
+          song.save
+        end
+      end
+    end
+end
 if false
     # 3.アルバムのデータをsave
     # gn_id:string artist title release_date:date track_count:integer genre url
@@ -41,8 +65,20 @@ if false
       song.artist = track[:track_artist_name]
       song.title = track[:track_title]
       song.track_num = track[:track_number]
-      song.mood = track[:mood].map{ |g| g[:text] }.join(',')
-      song.tempo = track[:tempo].map{ |g| g[:text] }.join(',')
+      mood_ids = []
+      if track[:mood].present?
+        track[:mood].each do |mood|
+          mood_ids = mood_ids.push(Mood.find_or_create_by(name: mood).id)
+        end
+      end
+      song.moods = Mood.where(id: mood_ids)
+      tempo_ids = []
+      if track[:tempo].present?
+        track[:tempo].each do |tempo|
+          tempo_ids = tempo_ids.push(Tempo.find_or_create_by(name: tempo).id)
+        end
+      end
+      song.tempos = Tempo.where(id: song.tempo_ids)
       song.save
     end
 end
